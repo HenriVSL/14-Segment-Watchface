@@ -1,3 +1,24 @@
 <resources>
     <string name="watch_face_name">Digital Watchface</string>
+
+    <!-- Ghost (unlit segments) style -->
+    <string name="ghost_style">Ghost segments</string>
+    <string name="ghost_14seg">14-segment</string>
+    <string name="ghost_7seg">7-segment</string>
+    <string name="ghost_none">None</string>
+
+    <!-- Time display mode -->
+    <string name="time_mode">Time display</string>
+    <string name="time_seconds">Show seconds</string>
+    <string name="time_blink">Blinking colon</string>
+    <string name="time_static">Static colon</string>
+
+    <!-- Text color -->
+    <string name="text_color">Color</string>
+    <string name="color_white">White</string>
+    <string name="color_red">Red</string>
+    <string name="color_amber">Amber</string>
+    <string name="color_green">Green</string>
+    <string name="color_cyan">Cyan</string>
+    <string name="color_blue">Blue</string>
 </resources>

@@ -7,76 +7,196 @@
     <Metadata
         key="PREVIEW_TIME"
         value="10:08:32" />
+
+    <UserConfigurations>
+        <ListConfiguration
+            id="ghostStyle"
+            displayName="ghost_style"
+            defaultValue="seg14">
+            <ListOption id="seg14" displayName="ghost_14seg" />
+            <ListOption id="seg7"  displayName="ghost_7seg" />
+            <ListOption id="none"  displayName="ghost_none" />
+        </ListConfiguration>
+        <ListConfiguration
+            id="timeMode"
+            displayName="time_mode"
+            defaultValue="static">
+            <ListOption id="seconds" displayName="time_seconds" />
+            <ListOption id="blink"   displayName="time_blink" />
+            <ListOption id="static"  displayName="time_static" />
+        </ListConfiguration>
+        <ColorConfiguration
+            id="textColor"
+            displayName="text_color"
+            defaultValue="white">
+            <ColorOption id="white" displayName="color_white" colors="#ffffffff" />
+            <ColorOption id="red"   displayName="color_red"   colors="#ffff3b30" />
+            <ColorOption id="amber" displayName="color_amber" colors="#ffffb000" />
+            <ColorOption id="green" displayName="color_green" colors="#ff39ff66" />
+            <ColorOption id="cyan"  displayName="color_cyan"  colors="#ff00e5ff" />
+            <ColorOption id="blue"  displayName="color_blue"  colors="#ff0a84ff" />
+        </ColorConfiguration>
+    </UserConfigurations>
+
     <Scene>
         <DigitalClock
             height="450"
             width="450"
             x="0"
             y="0">
-            <!-- Ghost: faint all-segments-on background ("~" = all 14 segments).
-                 Drawn first so the live time renders on top. Hidden in ambient
-                 mode to avoid lighting every segment for OLED burn-in/battery. -->
-            <PartText
-                height="160"
+
+            <!-- ===================== INTERACTIVE ===================== -->
+            <Group
+                name="interactive"
+                alpha="255"
+                height="450"
                 width="450"
                 x="0"
-                y="145">
-                <Variant
-                    mode="AMBIENT"
-                    target="alpha"
-                    value="0" />
-                <Text align="CENTER">
-                    <Font
-                        color="#33ffffff"
-                        family="dseg14classic_regular"
-                        size="96">~~:~~</Font>
-                </Text>
-            </PartText>
-            <!-- Main time (24-hour), interactive mode -->
-            <PartText
-                height="160"
-                width="450"
-                x="0"
-                y="145">
-                <Variant
-                    mode="AMBIENT"
-                    target="alpha"
-                    value="0" />
-                <Text align="CENTER">
-                    <Font
-                        color="#ffffffff"
-                        family="dseg14classic_regular"
-                        size="96">
-                        <Template><![CDATA[%02d:%02d]]>
-                            <Parameter expression="[HOUR_0_23]" />
-                            <Parameter expression="[MINUTE]" />
-                        </Template>
-                    </Font>
-                </Text>
-            </PartText>
-            <!-- Dimmed time (24-hour), ambient (always-on) mode -->
-            <PartText
+                y="0">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+
+                <!-- ============ GHOST (color-tinted, faint) ============ -->
+                <Condition>
+                    <Expressions>
+                        <Expression name="ghost14"><![CDATA[[CONFIGURATION.ghostStyle] == "seg14"]]></Expression>
+                    </Expressions>
+                    <Compare expression="ghost14">
+                        <Condition>
+                            <Expressions>
+                                <Expression name="g14sec"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
+                            </Expressions>
+                            <Compare expression="g14sec">
+                                <PartText alpha="51" height="160" width="450" x="0" y="145">
+                                    <Text align="CENTER">
+                                        <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="72">~~:~~:~~</Font>
+                                    </Text>
+                                </PartText>
+                            </Compare>
+                            <Default>
+                                <PartText alpha="51" height="160" width="450" x="0" y="145">
+                                    <Text align="CENTER">
+                                        <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="96">~~:~~</Font>
+                                    </Text>
+                                </PartText>
+                            </Default>
+                        </Condition>
+                    </Compare>
+                    <Default>
+                        <Condition>
+                            <Expressions>
+                                <Expression name="ghost7"><![CDATA[[CONFIGURATION.ghostStyle] == "seg7"]]></Expression>
+                            </Expressions>
+                            <Compare expression="ghost7">
+                                <Condition>
+                                    <Expressions>
+                                        <Expression name="g7sec"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
+                                    </Expressions>
+                                    <Compare expression="g7sec">
+                                        <PartText alpha="51" height="160" width="450" x="0" y="145">
+                                            <Text align="CENTER">
+                                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="72">88:88:88</Font>
+                                            </Text>
+                                        </PartText>
+                                    </Compare>
+                                    <Default>
+                                        <PartText alpha="51" height="160" width="450" x="0" y="145">
+                                            <Text align="CENTER">
+                                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="96">88:88</Font>
+                                            </Text>
+                                        </PartText>
+                                    </Default>
+                                </Condition>
+                            </Compare>
+                            <!-- ghostStyle == "none": render nothing -->
+                        </Condition>
+                    </Default>
+                </Condition>
+
+                <!-- ============ LIVE TIME ============ -->
+                <Condition>
+                    <Expressions>
+                        <Expression name="tSeconds"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
+                    </Expressions>
+                    <Compare expression="tSeconds">
+                        <!-- HH:MM:SS, static colons -->
+                        <PartText height="160" width="450" x="0" y="145">
+                            <Text align="CENTER">
+                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="72">
+                                    <Template><![CDATA[%02d:%02d:%02d]]>
+                                        <Parameter expression="[HOUR_0_23]" />
+                                        <Parameter expression="[MINUTE]" />
+                                        <Parameter expression="[SECOND]" />
+                                    </Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Compare>
+                    <Default>
+                        <Condition>
+                            <Expressions>
+                                <Expression name="tBlink"><![CDATA[[CONFIGURATION.timeMode] == "blink"]]></Expression>
+                            </Expressions>
+                            <Compare expression="tBlink">
+                                <!-- HH MM digits (space where colon goes) + blinking centered colon -->
+                                <Group height="160" width="450" x="0" y="145">
+                                    <PartText height="160" width="450" x="0" y="0">
+                                        <Text align="CENTER">
+                                            <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="96">
+                                                <Template><![CDATA[%02d %02d]]>
+                                                    <Parameter expression="[HOUR_0_23]" />
+                                                    <Parameter expression="[MINUTE]" />
+                                                </Template>
+                                            </Font>
+                                        </Text>
+                                    </PartText>
+                                    <PartText height="160" width="450" x="0" y="0">
+                                        <Transform target="alpha" value="[MILLISECOND] &lt; 500 ? 255 : 0" />
+                                        <Text align="CENTER">
+                                            <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="96">:</Font>
+                                        </Text>
+                                    </PartText>
+                                </Group>
+                            </Compare>
+                            <Default>
+                                <!-- HH:MM, static colon -->
+                                <PartText height="160" width="450" x="0" y="145">
+                                    <Text align="CENTER">
+                                        <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="96">
+                                            <Template><![CDATA[%02d:%02d]]>
+                                                <Parameter expression="[HOUR_0_23]" />
+                                                <Parameter expression="[MINUTE]" />
+                                            </Template>
+                                        </Font>
+                                    </Text>
+                                </PartText>
+                            </Default>
+                        </Condition>
+                    </Default>
+                </Condition>
+            </Group>
+
+            <!-- ===================== AMBIENT (always-on) ===================== -->
+            <Group
+                name="ambient"
                 alpha="0"
-                height="160"
+                height="450"
                 width="450"
                 x="0"
-                y="145">
-                <Variant
-                    mode="AMBIENT"
-                    target="alpha"
-                    value="255" />
-                <Text align="CENTER">
-                    <Font
-                        color="#ff9aa0a6"
-                        family="dseg14classic_regular"
-                        size="96">
-                        <Template><![CDATA[%02d:%02d]]>
-                            <Parameter expression="[HOUR_0_23]" />
-                            <Parameter expression="[MINUTE]" />
-                        </Template>
-                    </Font>
-                </Text>
-            </PartText>
+                y="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+
+                <PartText height="160" width="450" x="0" y="145">
+                    <Text align="CENTER">
+                        <Font color="#ff9aa0a6" family="dseg14classic_regular" size="96">
+                            <Template><![CDATA[%02d:%02d]]>
+                                <Parameter expression="[HOUR_0_23]" />
+                                <Parameter expression="[MINUTE]" />
+                            </Template>
+                        </Font>
+                    </Text>
+                </PartText>
+            </Group>
+
         </DigitalClock>
     </Scene>
 </WatchFace>
