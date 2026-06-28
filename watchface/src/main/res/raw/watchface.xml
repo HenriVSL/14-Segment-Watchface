@@ -13,17 +13,17 @@
             id="ghostStyle"
             displayName="ghost_style"
             defaultValue="seg14">
-            <ListOption id="seg14" displayName="ghost_14seg" />
-            <ListOption id="seg7"  displayName="ghost_7seg" />
-            <ListOption id="none"  displayName="ghost_none" />
+            <ListOption id="seg14" displayName="ghost_14seg" icon="ic_ghost_14" />
+            <ListOption id="seg7"  displayName="ghost_7seg"  icon="ic_ghost_7" />
+            <ListOption id="none"  displayName="ghost_none"  icon="ic_ghost_none" />
         </ListConfiguration>
         <ListConfiguration
             id="timeMode"
             displayName="time_mode"
             defaultValue="static">
-            <ListOption id="seconds" displayName="time_seconds" />
-            <ListOption id="blink"   displayName="time_blink" />
-            <ListOption id="static"  displayName="time_static" />
+            <ListOption id="seconds" displayName="time_seconds" icon="ic_time_seconds" />
+            <ListOption id="blink"   displayName="time_blink"   icon="ic_time_blink" />
+            <ListOption id="static"  displayName="time_static"  icon="ic_time_static" />
         </ListConfiguration>
         <ColorConfiguration
             id="textColor"

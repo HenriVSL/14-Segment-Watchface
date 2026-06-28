@@ -6,4 +6,7 @@
     https://developer.android.com/training/wearables/wff/setup#declare-metadata
     -->
     <Preview value="@drawable/preview" />
+    <!-- Required for the customize/edit (pencil) button to appear so users
+         can change the UserConfigurations (ghost, time mode, color). -->
+    <Editable value="true" />
 </WatchFaceInfo>
