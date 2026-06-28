@@ -13,6 +13,25 @@
             width="450"
             x="0"
             y="0">
+            <!-- Ghost: faint all-segments-on background ("~" = all 14 segments).
+                 Drawn first so the live time renders on top. Hidden in ambient
+                 mode to avoid lighting every segment for OLED burn-in/battery. -->
+            <PartText
+                height="160"
+                width="450"
+                x="0"
+                y="145">
+                <Variant
+                    mode="AMBIENT"
+                    target="alpha"
+                    value="0" />
+                <Text align="CENTER">
+                    <Font
+                        color="#33ffffff"
+                        family="dseg14classic_regular"
+                        size="96">~~:~~</Font>
+                </Text>
+            </PartText>
             <!-- Main time (24-hour), interactive mode -->
             <PartText
                 height="160"
