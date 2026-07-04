@@ -224,7 +224,7 @@
                         <Expression name="sHr"><![CDATA[[CONFIGURATION.showHeartRate] == "TRUE"]]></Expression>
                     </Expressions>
                     <Compare expression="sHr">
-                        <PartText height="60" width="450" x="0" y="39aq0">
+                        <PartText height="60" width="450" x="0" y="390">
                             <Text align="CENTER">
                                 <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="24">
                                     <Template><![CDATA[%d bpm]]>
