@@ -21,4 +21,9 @@
     <string name="color_green">Green</string>
     <string name="color_cyan">Cyan</string>
     <string name="color_blue">Blue</string>
+
+    <!-- Complication toggles -->
+    <string name="show_battery">Battery</string>
+    <string name="show_date">Date</string>
+    <string name="show_hr">Heart rate</string>
 </resources>

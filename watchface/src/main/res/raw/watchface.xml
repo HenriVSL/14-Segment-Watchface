@@ -36,6 +36,9 @@
             <ColorOption id="cyan"  displayName="color_cyan"  colors="#ff00e5ff" />
             <ColorOption id="blue"  displayName="color_blue"  colors="#ff0a84ff" />
         </ColorConfiguration>
+        <BooleanConfiguration id="showBattery" displayName="show_battery" screenReaderText="show_battery" defaultValue="TRUE" />
+        <BooleanConfiguration id="showDate"    displayName="show_date"    screenReaderText="show_date"    defaultValue="TRUE" />
+        <BooleanConfiguration id="showHeartRate" displayName="show_hr"    screenReaderText="show_hr"      defaultValue="FALSE" />
     </UserConfigurations>
 
     <Scene>
@@ -55,6 +58,24 @@
                 y="0">
                 <Variant mode="AMBIENT" target="alpha" value="0" />
 
+                <!-- ============ BATTERY (above the time) ============ -->
+                <Condition>
+                    <Expressions>
+                        <Expression name="sBatt"><![CDATA[[CONFIGURATION.showBattery] == "TRUE"]]></Expression>
+                    </Expressions>
+                    <Compare expression="sBatt">
+                        <PartText height="40" width="450" x="0" y="22">
+                            <Text align="CENTER">
+                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="24">
+                                    <Template><![CDATA[BATT: %d%%]]>
+                                        <Parameter expression="[BATTERY_PERCENT]" />
+                                    </Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Compare>
+                </Condition>
+
                 <!-- ============ GHOST (color-tinted, faint) ============ -->
                 <Condition>
                     <Expressions>
@@ -66,9 +87,9 @@
                                 <Expression name="g14sec"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
                             </Expressions>
                             <Compare expression="g14sec">
-                                <PartText alpha="51" height="160" width="450" x="0" y="145">
-                                    <Text align="CENTER">
-                                        <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="72">~~:~~:~~</Font>
+                                <PartText alpha="51" height="160" width="410" x="17" y="145">
+                                    <Text align="LEFT">
+                                        <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="78">~~:~~:~~</Font>
                                     </Text>
                                 </PartText>
                             </Compare>
@@ -92,9 +113,9 @@
                                         <Expression name="g7sec"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
                                     </Expressions>
                                     <Compare expression="g7sec">
-                                        <PartText alpha="51" height="160" width="450" x="0" y="145">
-                                            <Text align="CENTER">
-                                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="72">88:88:88</Font>
+                                        <PartText alpha="51" height="160" width="410" x="17" y="145">
+                                            <Text align="LEFT">
+                                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="78">88:88:88</Font>
                                             </Text>
                                         </PartText>
                                     </Compare>
@@ -118,10 +139,11 @@
                         <Expression name="tSeconds"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
                     </Expressions>
                     <Compare expression="tSeconds">
-                        <!-- HH:MM:SS, static colons -->
-                        <PartText height="160" width="450" x="0" y="145">
-                            <Text align="CENTER">
-                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="72">
+                        <!-- HH:MM:SS, static colons. Left-aligned so the ambient HH:MM
+                             below overlays the hours/minutes exactly (the :SS just drops off). -->
+                        <PartText height="160" width="410" x="17" y="145">
+                            <Text align="LEFT">
+                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="78">
                                     <Template><![CDATA[%02d:%02d:%02d]]>
                                         <Parameter expression="[HOUR_0_23]" />
                                         <Parameter expression="[MINUTE]" />
@@ -150,7 +172,9 @@
                                         </Text>
                                     </PartText>
                                     <PartText height="160" width="450" x="0" y="0">
-                                        <Transform target="alpha" value="[MILLISECOND] &lt; 500 ? 255 : 0" />
+                                        <!-- Off during the first half-second, so the static editor
+                                             preview (millisecond 0) shows the colon hidden. Still a 1 Hz blink live. -->
+                                        <Transform target="alpha" value="[MILLISECOND] &lt; 500 ? 0 : 255" />
                                         <Text align="CENTER">
                                             <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="96">:</Font>
                                         </Text>
@@ -173,6 +197,44 @@
                         </Condition>
                     </Default>
                 </Condition>
+
+                <!-- ============ DATE (DD - MM - YYYY) ============ -->
+                <Condition>
+                    <Expressions>
+                        <Expression name="sDate"><![CDATA[[CONFIGURATION.showDate] == "TRUE"]]></Expression>
+                    </Expressions>
+                    <Compare expression="sDate">
+                        <PartText height="70" width="450" x="0" y="270">
+                            <Text align="CENTER">
+                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="40">
+                                    <Template><![CDATA[%02d - %02d - %04d]]>
+                                        <Parameter expression="[DAY]" />
+                                        <Parameter expression="[MONTH]" />
+                                        <Parameter expression="[YEAR]" />
+                                    </Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Compare>
+                </Condition>
+
+                <!-- ============ HEART RATE (below the date) ============ -->
+                <Condition>
+                    <Expressions>
+                        <Expression name="sHr"><![CDATA[[CONFIGURATION.showHeartRate] == "TRUE"]]></Expression>
+                    </Expressions>
+                    <Compare expression="sHr">
+                        <PartText height="60" width="450" x="0" y="39aq0">
+                            <Text align="CENTER">
+                                <Font color="[CONFIGURATION.textColor.0]" family="dseg14classic_regular" size="24">
+                                    <Template><![CDATA[%d bpm]]>
+                                        <Parameter expression="[HEART_RATE]" />
+                                    </Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Compare>
+                </Condition>
             </Group>
 
             <!-- ===================== AMBIENT (always-on) ===================== -->
@@ -185,16 +247,38 @@
                 y="0">
                 <Variant mode="AMBIENT" target="alpha" value="255" />
 
-                <PartText height="160" width="450" x="0" y="145">
-                    <Text align="CENTER">
-                        <Font color="#ff9aa0a6" family="dseg14classic_regular" size="96">
-                            <Template><![CDATA[%02d:%02d]]>
-                                <Parameter expression="[HOUR_0_23]" />
-                                <Parameter expression="[MINUTE]" />
-                            </Template>
-                        </Font>
-                    </Text>
-                </PartText>
+                <Condition>
+                    <Expressions>
+                        <Expression name="ambSeconds"><![CDATA[[CONFIGURATION.timeMode] == "seconds"]]></Expression>
+                    </Expressions>
+                    <Compare expression="ambSeconds">
+                        <!-- Seconds mode: keep HH:MM exactly where it was (left-aligned,
+                             size 72, same x as the interactive HH:MM:SS); the seconds drop off. -->
+                        <PartText height="160" width="410" x="17" y="145">
+                            <Text align="LEFT">
+                                <Font color="#ff9aa0a6" family="dseg14classic_regular" size="78">
+                                    <Template><![CDATA[%02d:%02d]]>
+                                        <Parameter expression="[HOUR_0_23]" />
+                                        <Parameter expression="[MINUTE]" />
+                                    </Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Compare>
+                    <Default>
+                        <!-- No-seconds modes: dim HH:MM, centered, same size as interactive. -->
+                        <PartText height="160" width="450" x="0" y="145">
+                            <Text align="CENTER">
+                                <Font color="#ff9aa0a6" family="dseg14classic_regular" size="96">
+                                    <Template><![CDATA[%02d:%02d]]>
+                                        <Parameter expression="[HOUR_0_23]" />
+                                        <Parameter expression="[MINUTE]" />
+                                    </Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Default>
+                </Condition>
             </Group>
 
         </DigitalClock>
