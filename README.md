@@ -1,4 +1,4 @@
-# Digital Watchface
+# SEG-14
 
 A minimalist digital watch face for **Wear OS** that renders the time in a
 14-segment LCD font (DSEG14), complete with faint "ghost" segments for that

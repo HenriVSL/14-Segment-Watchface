@@ -1,5 +1,5 @@
 <resources>
-    <string name="watch_face_name">Digital Watchface</string>
+    <string name="watch_face_name">SEG-14</string>
 
     <!-- Ghost (unlit segments) style -->
     <string name="ghost_style">Ghost segments</string>
